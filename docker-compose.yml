@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  horoscope-api:
+    container_name: node-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    command: npm run start:dev
+    ports:
+      - "8080:8080"
+    networks:
+      - server-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+#    env_file:
+#      - .env
+    environment:
+      - NODE_ENV=
+      - PORT=
+      - SHOW_SWAGGER=
+      - RUN_FAKE_TASK=
+      - JWT_SECRET=
+      - OPENAI_API_KEY=
+      - OPENAI_ORGANISATION_ID=
+      - MONGO_DB_CONNECTION=
+      - MONGO_DATABASE=
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo
+    container_name: mongo-db
+    ports:
+      - "27017:27017"
+    networks:
+      - server-network
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
+
+networks:
+  server-network:
